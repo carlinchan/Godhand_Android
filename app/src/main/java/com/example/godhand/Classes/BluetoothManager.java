@@ -23,7 +23,7 @@ public class BluetoothManager extends Application {
     // InputStream object
     private InputStream inputStream = null;
     // The timeout parameter for acknowledgement (unit: millisecond)
-    private long timeout_ack = 1000;
+    private long timeout_ack = 2000;
     // The timeout parameter for "finished" message (unit: millisecond)
     private long timeout_finish = 8000;
 
