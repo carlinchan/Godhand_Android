@@ -78,6 +78,7 @@ public class GrippingMode extends AppCompatActivity {
         final String command = ((Button) view).getContentDescription().toString();
 
         toggleButton();
+
         threadACK = new ThreadACK(command);
         threadACK.start();
     }
@@ -215,6 +216,7 @@ public class GrippingMode extends AppCompatActivity {
                         Toast.makeText(GrippingMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
                         toggleButton();
+
                     }
                 }
             });
@@ -228,6 +230,9 @@ public class GrippingMode extends AppCompatActivity {
         findViewById(R.id.gripping).setEnabled(!findViewById(R.id.gripping).isEnabled());
         findViewById(R.id.straight).setEnabled(!findViewById(R.id.straight).isEnabled());
         findViewById(R.id.relax).setEnabled(!findViewById(R.id.relax).isEnabled());
+        findViewById(R.id.gripping).setClickable(!findViewById(R.id.gripping).isClickable());
+        findViewById(R.id.straight).setClickable(!findViewById(R.id.straight).isClickable());
+        findViewById(R.id.relax).setClickable(!findViewById(R.id.relax).isClickable());
     }
 
 }

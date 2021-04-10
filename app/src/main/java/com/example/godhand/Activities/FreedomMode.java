@@ -94,6 +94,7 @@ public class FreedomMode extends AppCompatActivity {
         Log.d("Freedom command: ", command);
 
         findViewById(R.id.action).setEnabled(false);
+        findViewById(R.id.action).setClickable(false);
         threadACK = new ThreadACK(command);
         threadACK.start();
     }
@@ -186,6 +187,7 @@ public class FreedomMode extends AppCompatActivity {
                         Toast.makeText(FreedomMode.this, "Command valid!",
                                 Toast.LENGTH_SHORT).show();
                         findViewById(R.id.action).setEnabled(true);
+                        findViewById(R.id.action).setClickable(true);
                     }
                     else if (ack.equals("valid")){
                         String msg = null;
@@ -220,17 +222,20 @@ public class FreedomMode extends AppCompatActivity {
                             Toast.makeText(FreedomMode.this, "Action completed!",
                                     Toast.LENGTH_SHORT).show();
                             findViewById(R.id.action).setEnabled(true);
+                            findViewById(R.id.action).setClickable(true);
                         }
                         else {
                             Toast.makeText(FreedomMode.this, "Unknown message!",
                                     Toast.LENGTH_SHORT).show();
                             findViewById(R.id.action).setEnabled(true);
+                            findViewById(R.id.action).setClickable(true);
                         }
                     }
                     else {
                         Toast.makeText(FreedomMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
                         findViewById(R.id.action).setEnabled(true);
+                        findViewById(R.id.action).setClickable(true);
                     }
                 }
             });

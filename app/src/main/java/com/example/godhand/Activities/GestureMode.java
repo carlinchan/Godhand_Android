@@ -90,6 +90,8 @@ public class GestureMode extends AppCompatActivity {
                 String[] commands = strings[1].split(": ");
 
                 listView.setEnabled(false);
+                findViewById(R.id.add_gesture).setEnabled(false);
+                findViewById(R.id.add_gesture).setClickable(false);
                 threadACK = new ThreadACK(commands[1]);
                 threadACK.start();
             }
@@ -233,6 +235,8 @@ public class GestureMode extends AppCompatActivity {
                         Toast.makeText(GestureMode.this, "Command valid!",
                                 Toast.LENGTH_SHORT).show();
                         listView.setEnabled(true);
+                        findViewById(R.id.add_gesture).setEnabled(true);
+                        findViewById(R.id.add_gesture).setClickable(true);
                     }
                     else if (ack.equals("valid")){
                         String msg = null;
@@ -267,17 +271,22 @@ public class GestureMode extends AppCompatActivity {
                             Toast.makeText(GestureMode.this, "Action completed!",
                                     Toast.LENGTH_SHORT).show();
                             listView.setEnabled(true);
+                            findViewById(R.id.add_gesture).setEnabled(true);
+                            findViewById(R.id.add_gesture).setClickable(true);
                         }
                         else {
                             Toast.makeText(GestureMode.this, "Unknown message!",
                                     Toast.LENGTH_SHORT).show();
                             listView.setEnabled(true);
+                            findViewById(R.id.add_gesture).setEnabled(true);
+                            findViewById(R.id.add_gesture).setClickable(true);
                         }
                     }
                     else {
                         Toast.makeText(GestureMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
                         listView.setEnabled(true);
+                        findViewById(R.id.add_gesture).setClickable(true);
                     }
                 }
             });
