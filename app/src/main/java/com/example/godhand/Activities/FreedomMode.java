@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ public class FreedomMode extends AppCompatActivity {
 
     // The thread for waiting acknowledgement (command received)
     private ThreadACK threadACK;
+    // Used to control screen touch
+    private Boolean touchable = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // onCreate()
@@ -93,8 +96,9 @@ public class FreedomMode extends AppCompatActivity {
         String command = String.valueOf(temp);
         Log.d("Freedom command: ", command);
 
-        findViewById(R.id.action).setEnabled(false);
-        findViewById(R.id.action).setClickable(false);
+        touchable = false;
+        toggleButton();
+
         threadACK = new ThreadACK(command);
         threadACK.start();
     }
@@ -186,8 +190,8 @@ public class FreedomMode extends AppCompatActivity {
                     else if (ack.equals("invalid")) {
                         Toast.makeText(FreedomMode.this, "Command valid!",
                                 Toast.LENGTH_SHORT).show();
-                        findViewById(R.id.action).setEnabled(true);
-                        findViewById(R.id.action).setClickable(true);
+                        touchable = true;
+                        toggleButton();
                     }
                     else if (ack.equals("valid")){
                         String msg = null;
@@ -221,24 +225,39 @@ public class FreedomMode extends AppCompatActivity {
                         else if (msg.equals("finished")) {
                             Toast.makeText(FreedomMode.this, "Action completed!",
                                     Toast.LENGTH_SHORT).show();
-                            findViewById(R.id.action).setEnabled(true);
-                            findViewById(R.id.action).setClickable(true);
+                            touchable = true;
+                            toggleButton();
                         }
                         else {
                             Toast.makeText(FreedomMode.this, "Unknown message!",
                                     Toast.LENGTH_SHORT).show();
-                            findViewById(R.id.action).setEnabled(true);
-                            findViewById(R.id.action).setClickable(true);
+                            touchable = true;
+                            toggleButton();
                         }
                     }
                     else {
                         Toast.makeText(FreedomMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
-                        findViewById(R.id.action).setEnabled(true);
-                        findViewById(R.id.action).setClickable(true);
+                        touchable = true;
+                        toggleButton();
                     }
                 }
             });
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // Used for toggling the UI button
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public void toggleButton() {
+        findViewById(R.id.action).setEnabled(!findViewById(R.id.action).isEnabled());
+        findViewById(R.id.action).setClickable(!findViewById(R.id.action).isClickable());
+        if (touchable == false) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 

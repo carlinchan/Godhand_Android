@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -33,6 +34,9 @@ public class GestureMode extends AppCompatActivity {
     private ArrayList<String> mGestureList;
     // The thread for waiting acknowledgement (command received)
     private ThreadACK threadACK;
+    // Used to control screen touch
+    private Boolean touchable = true;
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // onCreate()
@@ -89,9 +93,9 @@ public class GestureMode extends AppCompatActivity {
                 String[] strings = val.split("\n");
                 String[] commands = strings[1].split(": ");
 
-                listView.setEnabled(false);
-                findViewById(R.id.add_gesture).setEnabled(false);
-                findViewById(R.id.add_gesture).setClickable(false);
+                touchable = false;
+                toggleButton();
+
                 threadACK = new ThreadACK(commands[1]);
                 threadACK.start();
             }
@@ -234,9 +238,8 @@ public class GestureMode extends AppCompatActivity {
                     else if (ack.equals("invalid")) {
                         Toast.makeText(GestureMode.this, "Command valid!",
                                 Toast.LENGTH_SHORT).show();
-                        listView.setEnabled(true);
-                        findViewById(R.id.add_gesture).setEnabled(true);
-                        findViewById(R.id.add_gesture).setClickable(true);
+                        touchable = true;
+                        toggleButton();
                     }
                     else if (ack.equals("valid")){
                         String msg = null;
@@ -270,26 +273,40 @@ public class GestureMode extends AppCompatActivity {
                         else if (msg.equals("finished")) {
                             Toast.makeText(GestureMode.this, "Action completed!",
                                     Toast.LENGTH_SHORT).show();
-                            listView.setEnabled(true);
-                            findViewById(R.id.add_gesture).setEnabled(true);
-                            findViewById(R.id.add_gesture).setClickable(true);
+                            touchable = true;
+                            toggleButton();
                         }
                         else {
                             Toast.makeText(GestureMode.this, "Unknown message!",
                                     Toast.LENGTH_SHORT).show();
-                            listView.setEnabled(true);
-                            findViewById(R.id.add_gesture).setEnabled(true);
-                            findViewById(R.id.add_gesture).setClickable(true);
+                            touchable = true;
+                            toggleButton();
                         }
                     }
                     else {
                         Toast.makeText(GestureMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
-                        listView.setEnabled(true);
-                        findViewById(R.id.add_gesture).setClickable(true);
+                        touchable = true;
+                        toggleButton();
                     }
                 }
             });
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // Used for toggling the UI button
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public void toggleButton() {
+        listView.setEnabled(!listView.isEnabled());
+        findViewById(R.id.add_gesture).setEnabled(!findViewById(R.id.add_gesture).isEnabled());
+        findViewById(R.id.add_gesture).setClickable(!findViewById(R.id.add_gesture).isClickable());
+        if (touchable == false) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 

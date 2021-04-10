@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ public class GrippingMode extends AppCompatActivity {
 
     // The thread for waiting acknowledgement
     private ThreadACK threadACK;
+    // Used to control screen touch
+    private Boolean touchable = true;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // onCreate()
@@ -77,6 +80,7 @@ public class GrippingMode extends AppCompatActivity {
         Log.d("Content Description: ", ((Button) view).getContentDescription().toString());
         final String command = ((Button) view).getContentDescription().toString();
 
+        touchable = false;
         toggleButton();
 
         threadACK = new ThreadACK(command);
@@ -170,6 +174,7 @@ public class GrippingMode extends AppCompatActivity {
                     else if (ack.equals("invalid")) {
                         Toast.makeText(GrippingMode.this, "Command valid!",
                                 Toast.LENGTH_SHORT).show();
+                        touchable = true;
                         toggleButton();
                     }
                     else if (ack.equals("valid")){
@@ -204,19 +209,21 @@ public class GrippingMode extends AppCompatActivity {
                         else if (msg.equals("finished")) {
                             Toast.makeText(GrippingMode.this, "Action completed!",
                                     Toast.LENGTH_SHORT).show();
+                            touchable = true;
                             toggleButton();
                         }
                         else {
                             Toast.makeText(GrippingMode.this, "Unknown message!",
                                     Toast.LENGTH_SHORT).show();
+                            touchable = true;
                             toggleButton();
                         }
                     }
                     else {
                         Toast.makeText(GrippingMode.this, "Unknown ack!",
                                 Toast.LENGTH_SHORT).show();
+                        touchable = true;
                         toggleButton();
-
                     }
                 }
             });
@@ -224,7 +231,7 @@ public class GrippingMode extends AppCompatActivity {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    // Used for UI toggling the button
+    // Used for toggling the UI button
     //////////////////////////////////////////////////////////////////////////////////////////
     public void toggleButton() {
         findViewById(R.id.gripping).setEnabled(!findViewById(R.id.gripping).isEnabled());
@@ -233,6 +240,13 @@ public class GrippingMode extends AppCompatActivity {
         findViewById(R.id.gripping).setClickable(!findViewById(R.id.gripping).isClickable());
         findViewById(R.id.straight).setClickable(!findViewById(R.id.straight).isClickable());
         findViewById(R.id.relax).setClickable(!findViewById(R.id.relax).isClickable());
+        if (touchable == false) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
     }
 
 }
